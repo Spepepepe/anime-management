@@ -16,38 +16,56 @@ export const AnimeCurrentListItem : React.FC<AnimeCurrentListItemProps> = ({curr
       };
 
 
+    // 今日の曜日を取得 (0: 日曜日, 1: 月曜日, ..., 6: 土曜日)
+    const todayWeekday = currentDate.getDay();
+    // 1-7の形式に変換 (1: 月曜日, ..., 7: 日曜日)
+    const todayWeekdayStr = todayWeekday === 0 ? "7" : todayWeekday.toString();
+
     let deliveryWeeday = "";
     let stateBgColorClass = "";
+    let isToday = false;
+
     switch(currentAnime.delivery_weekday){
         case "1":
             deliveryWeeday = "月";
-            stateBgColorClass = colorMap['Monday']; 
+            stateBgColorClass = colorMap['Monday'];
+            isToday = todayWeekdayStr === "1";
         break;
         case "2":
             deliveryWeeday = "火";
-            stateBgColorClass = colorMap['Tuesday']; 
+            stateBgColorClass = colorMap['Tuesday'];
+            isToday = todayWeekdayStr === "2";
         break;
         case "3":
             deliveryWeeday = "水";
-            stateBgColorClass = colorMap['Wednesday']; 
+            stateBgColorClass = colorMap['Wednesday'];
+            isToday = todayWeekdayStr === "3";
         break;
         case "4":
             deliveryWeeday = "木";
-            stateBgColorClass = colorMap['Thursday']; 
+            stateBgColorClass = colorMap['Thursday'];
+            isToday = todayWeekdayStr === "4";
         break;
         case "5":
             deliveryWeeday = "金";
-            stateBgColorClass = colorMap['Friday']; 
+            stateBgColorClass = colorMap['Friday'];
+            isToday = todayWeekdayStr === "5";
         break;
         case "6":
             deliveryWeeday = "土";
-            stateBgColorClass = colorMap['Saturday']; 
+            stateBgColorClass = colorMap['Saturday'];
+            isToday = todayWeekdayStr === "6";
         break;
         case "7":
             deliveryWeeday = "日";
-            stateBgColorClass = colorMap['Sunday']; 
+            stateBgColorClass = colorMap['Sunday'];
+            isToday = todayWeekdayStr === "7";
         break;
     }
+
+    // 今日の場合は反転スタイルを適用
+    const weekdayTextColor = isToday ? stateBgColorClass.replace('bg-', 'text-') : '!text-black';
+    const weekdayBgColor = isToday ? '!bg-black' : stateBgColorClass;
 
     const onEpisodeUp = () => {
         onclick(currentAnime);
@@ -71,14 +89,12 @@ export const AnimeCurrentListItem : React.FC<AnimeCurrentListItemProps> = ({curr
 
         if (expectedEpisodes > animeInfo.episode) {
             return {
-                bgColor: 'bg-gray-300',
-                borderClass: 'border-4 border-red-800',
+                titleColor: '!text-red-600',
                 fontWeight: 'font-bold'
             };
         }else{
             return {
-                bgColor: '',
-                borderClass: '',
+                titleColor: '!text-black',
                 fontWeight: ''
             };
         }
@@ -98,10 +114,10 @@ export const AnimeCurrentListItem : React.FC<AnimeCurrentListItemProps> = ({curr
     const animeName = formatAnimeName(currentAnime.anime.anime_name);
 
     return (
-        <tr className={`bg-white hover:bg-gray-100 ${rowStyle.bgColor} ${rowStyle.borderClass} ${rowStyle.fontWeight}`}>
-            <td className="!text-black px-1 py-1 text-xs md:text-base whitespace-pre md:whitespace-nowrap">{animeName}</td>
+        <tr className={`bg-white hover:bg-gray-100 ${rowStyle.fontWeight}`}>
+            <td className={`px-1 py-1 text-xs md:text-base whitespace-pre md:whitespace-nowrap ${rowStyle.titleColor}`}>{animeName}</td>
             {/* <td className="!text-black px-1 py-1 text-center text-xs whitespace-nowrap">{releaseDate}</td> */}
-            <td className={`!text-black px-1 py-1 text-center text-xs md:text-base whitespace-nowrap ${stateBgColorClass}`}>{deliveryWeeday}</td>
+            <td className={`px-1 py-1 text-center text-xs md:text-base whitespace-nowrap ${weekdayTextColor} ${weekdayBgColor}`}>{deliveryWeeday}</td>
             <td className="!text-black px-1 py-1 text-center text-xs md:text-base whitespace-nowrap">{currentAnime.delivery_time.slice(0, 5)}</td>
             <td className="!text-black px-1 py-1 text-center text-xs md:text-base whitespace-nowrap">{currentAnime.anime.episode}話</td>
             <td className="!text-black px-1 py-1 text-center whitespace-nowrap">
