@@ -1,5 +1,5 @@
 import { AnimePastListItemProps } from "../data/props";
-export const AnimePastListItem : React.FC<AnimePastListItemProps> = ({pastAnime,onclick,onFinish}) => {
+export const AnimePastListItem : React.FC<AnimePastListItemProps> = ({pastAnime,onclick,onFinish,isFirstZeroEpisode}) => {
 
     const releaseDate = pastAnime.watching_start_date.split('T')[0];
     
@@ -16,6 +16,7 @@ export const AnimePastListItem : React.FC<AnimePastListItemProps> = ({pastAnime,
     const animeName = formatAnimeName(pastAnime.anime.anime_name);
     const bgColor = pastAnime.anime.anime_flg ? "bg-blue-50" : "bg-pink-50";
     const hoverColor = pastAnime.anime.anime_flg ? "hover:bg-blue-100" : "hover:bg-pink-100";
+    const borderColor = isFirstZeroEpisode ? "border-t-4 border-red-500" : "";
 
     const onEpisodeUp = () => {
         onclick(pastAnime);
@@ -26,7 +27,7 @@ export const AnimePastListItem : React.FC<AnimePastListItemProps> = ({pastAnime,
     }
 
     return (
-        <tr className={`${bgColor} ${hoverColor}`}>
+        <tr className={`${bgColor} ${hoverColor} ${borderColor}`}>
             <td className="!text-black px-1 py-1 text-center text-xs md:text-base whitespace-nowrap">{typeLabel}</td>
             <td className="!text-black px-1 py-1 text-xs md:text-base whitespace-pre md:whitespace-nowrap">{animeName}</td>
             <td className="!text-black px-1 py-1 text-center text-xs md:text-base whitespace-nowrap">{releaseDate}</td>

@@ -76,9 +76,20 @@ const AnimePastEntry = () => {
             </tr>
           </thead>
           <tbody>
-          {pastAnime.map((pastAnimedata,index) => (
-             <AnimePastListItem key={index} pastAnime={pastAnimedata} onclick={onEpisodeUp} onFinish={onFinishWatching}/>
-            ))}
+          {pastAnime.map((pastAnimedata,index) => {
+            // 最初の0話作品かどうかを判定
+            const isFirstZeroEpisode = pastAnimedata.anime.episode === 0 &&
+              (index === 0 || pastAnime[index - 1].anime.episode > 0);
+            return (
+              <AnimePastListItem
+                key={index}
+                pastAnime={pastAnimedata}
+                onclick={onEpisodeUp}
+                onFinish={onFinishWatching}
+                isFirstZeroEpisode={isFirstZeroEpisode}
+              />
+            );
+          })}
           </tbody>
         </table>
       </div>

@@ -27,7 +27,8 @@ export interface AnimeCurrentListItemProps{
 export interface AnimePastListItemProps{
     pastAnime: IPastAnime,
     onclick : (pastAnime:IPastAnime) => void,
-    onFinish : (pasttAnime:IPastAnime) => void
+    onFinish : (pasttAnime:IPastAnime) => void,
+    isFirstZeroEpisode?: boolean
 }
 
 export interface AnimeViewedListItemProps{

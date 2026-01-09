@@ -23,10 +23,20 @@ const AnimeRegistEntry = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
 
     if (name === "seasonType") {
       setIsCurrentSeason(value === "1");
+    }
+
+    // 配信開始日が変更されたときに自動的に曜日を設定
+    if (name === "ReleaseDate" && value) {
+      const date = new Date(value);
+      const dayOfWeek = date.getDay(); // 0=日曜日, 1=月曜日, ..., 6=土曜日
+      // 配信曜日のフォーマットに変換: 1=月曜日, 2=火曜日, ..., 7=日曜日
+      const deliveryWeekday = dayOfWeek === 0 ? "7" : dayOfWeek.toString();
+      setFormData({ ...formData, [name]: value, deliveryWeekday });
+    } else {
+      setFormData({ ...formData, [name]: value });
     }
   };
 
