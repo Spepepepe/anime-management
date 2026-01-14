@@ -53,6 +53,24 @@ export const pastAnimeEpisodeUp = async (animeId: number, userId: string): Promi
   await addWatchHistory(animeId, userId, newEpisode);
 };
 
+export const deletePastAnime = async (animeId: number): Promise<void> => {
+  // past_animeから削除
+  const { error: deletePastError } = await supabase
+    .from('past_anime')
+    .delete()
+    .eq('anime_id', animeId);
+
+  if (deletePastError) throw deletePastError;
+
+  // animeテーブルから削除
+  const { error: deleteAnimeError } = await supabase
+    .from('anime')
+    .delete()
+    .eq('anime_id', animeId);
+
+  if (deleteAnimeError) throw deleteAnimeError;
+};
+
 export const pastAnimeFinishWatching = async (animeId: number, userId: string): Promise<void> => {
   const { data: animeData, error: fetchError } = await supabase
     .from('anime')

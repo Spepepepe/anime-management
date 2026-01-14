@@ -2,7 +2,7 @@ import { useState,useEffect } from "react";
 import { ICurrentAnime } from "../data/interface";
 import { AnimeCurrentListItem } from "./animeCurrentListItem";
 import { supabase } from '../../../lib/supabaseClient';
-import { getCurrentAnime, currentAnimeEpisodeUp, currentAnimeFinishWatching } from '../../../lib/service/animeCurrentService';
+import { getCurrentAnime, currentAnimeEpisodeUp, currentAnimeFinishWatching, deleteCurrentAnime } from '../../../lib/service/animeCurrentService';
 const AnimeCurrentEntry = () => {
 
   const [currentAnime,SetCurrentAnime] = useState<ICurrentAnime[]>([]);
@@ -72,6 +72,20 @@ const AnimeCurrentEntry = () => {
     handleFinishWatching(iCurrentAnime.anime_id);
   }
 
+  const handleDelete = async (animeId: number) => {
+    try {
+      await deleteCurrentAnime(animeId);
+      loadCurrentAnime();
+    } catch (error) {
+      console.error("エラーが発生しました:", error);
+      alert("削除に失敗しました。");
+    }
+  }
+
+  const onDelete = (iCurrentAnime:ICurrentAnime) => {
+    handleDelete(iCurrentAnime.anime_id);
+  }
+
   useEffect(() => {
     if (user) {
       loadCurrentAnime();
@@ -99,7 +113,7 @@ const AnimeCurrentEntry = () => {
           </thead>
           <tbody>
             {currentAnime.map((currentAnimedata, index) => (
-              <AnimeCurrentListItem key={index} currentAnime={currentAnimedata} onclick={onEpisodeUp} onFinish={onFinishWatching}/>
+              <AnimeCurrentListItem key={index} currentAnime={currentAnimedata} onclick={onEpisodeUp} onFinish={onFinishWatching} onDelete={onDelete}/>
             ))}
           </tbody>
         </table>

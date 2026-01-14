@@ -1,6 +1,6 @@
 import { ICurrentAnime } from "../data/interface";
 import { AnimeCurrentListItemProps } from "../data/props";
-export const AnimeCurrentListItem : React.FC<AnimeCurrentListItemProps> = ({currentAnime,onclick,onFinish}) => {
+export const AnimeCurrentListItem : React.FC<AnimeCurrentListItemProps> = ({currentAnime,onclick,onFinish,onDelete}) => {
     const releaseDate = currentAnime.releasedate;
 
     const currentDate = new Date();
@@ -75,6 +75,12 @@ export const AnimeCurrentListItem : React.FC<AnimeCurrentListItemProps> = ({curr
         onFinish(currentAnime);
     }
 
+    const onDeleteAnime = () => {
+        if (window.confirm(`「${currentAnime.anime.anime_name}」を削除しますか？`)) {
+            onDelete(currentAnime);
+        }
+    }
+
     const getExpectedEpisodes = (delivery:string) => {
         const releaseDateTime = new Date(`${releaseDate}T${delivery}`);
         const diffInMilliseconds = currentDate.getTime() - releaseDateTime.getTime();
@@ -127,10 +133,15 @@ export const AnimeCurrentListItem : React.FC<AnimeCurrentListItemProps> = ({curr
                         onClick={onEpisodeUp}>
                     視聴
                     </button>
-                    <button 
+                    <button
                         className="bg-red-500 hover:bg-red-700 text-white text-xs py-1 px-2 md:w-24 md:h-16 md:text-base rounded"
                         onClick={onFinishAnime}>
                     終了
+                    </button>
+                    <button
+                        className="bg-gray-500 hover:bg-gray-700 text-white text-xs py-1 px-2 md:w-24 md:h-16 md:text-base rounded"
+                        onClick={onDeleteAnime}>
+                    削除
                     </button>
                 </div>
             </td>

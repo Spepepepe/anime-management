@@ -56,6 +56,24 @@ export const currentAnimeEpisodeUp = async (animeId: number, userId: string): Pr
   await addWatchHistory(animeId, userId, newEpisode);
 };
 
+export const deleteCurrentAnime = async (animeId: number): Promise<void> => {
+  // current_animeから削除
+  const { error: deleteCurrentError } = await supabase
+    .from('current_anime')
+    .delete()
+    .eq('anime_id', animeId);
+
+  if (deleteCurrentError) throw deleteCurrentError;
+
+  // animeテーブルから削除
+  const { error: deleteAnimeError } = await supabase
+    .from('anime')
+    .delete()
+    .eq('anime_id', animeId);
+
+  if (deleteAnimeError) throw deleteAnimeError;
+};
+
 export const currentAnimeFinishWatching = async (animeId: number, userId: string): Promise<void> => {
   const { data: animeData, error: fetchError } = await supabase
     .from('anime')

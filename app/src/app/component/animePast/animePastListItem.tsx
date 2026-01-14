@@ -1,5 +1,5 @@
 import { AnimePastListItemProps } from "../data/props";
-export const AnimePastListItem : React.FC<AnimePastListItemProps> = ({pastAnime,onclick,onFinish,isFirstZeroEpisode}) => {
+export const AnimePastListItem : React.FC<AnimePastListItemProps> = ({pastAnime,onclick,onFinish,onDelete,isFirstZeroEpisode}) => {
 
     const releaseDate = pastAnime.watching_start_date.split('T')[0];
     
@@ -26,6 +26,12 @@ export const AnimePastListItem : React.FC<AnimePastListItemProps> = ({pastAnime,
         onFinish(pastAnime);
     }
 
+    const onDeleteAnime = () => {
+        if (window.confirm(`「${pastAnime.anime.anime_name}」を削除しますか？`)) {
+            onDelete(pastAnime);
+        }
+    }
+
     return (
         <tr className={`${bgColor} ${hoverColor} ${borderColor}`}>
             <td className="!text-black px-1 py-1 text-center text-xs md:text-base whitespace-nowrap">{typeLabel}</td>
@@ -43,6 +49,11 @@ export const AnimePastListItem : React.FC<AnimePastListItemProps> = ({pastAnime,
                         className="bg-red-500 hover:bg-red-700 text-white text-xs py-1 px-2 md:w-24 md:h-16 md:text-base rounded"
                         onClick={onFinishAnime}>
                     終了
+                    </button>
+                    <button
+                        className="bg-gray-500 hover:bg-gray-700 text-white text-xs py-1 px-2 md:w-24 md:h-16 md:text-base rounded"
+                        onClick={onDeleteAnime}>
+                    削除
                     </button>
                 </div>
             </td>

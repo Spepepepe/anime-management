@@ -2,7 +2,7 @@ import { useState,useEffect } from "react";
 import { IPastAnime } from "../data/interface";
 import { AnimePastListItem } from "./animePastListItem";
 import { supabase } from '../../../lib/supabaseClient';
-import { getPastAnime, pastAnimeEpisodeUp, pastAnimeFinishWatching } from '../../../lib/service/animePastService';
+import { getPastAnime, pastAnimeEpisodeUp, pastAnimeFinishWatching, deletePastAnime } from '../../../lib/service/animePastService';
 const AnimePastEntry = () => {
   const [pastAnime,setPastAnime] = useState<IPastAnime[]>([]);
   const [user, setUser] = useState<{ id: string } | null>(null);
@@ -56,7 +56,21 @@ const AnimePastEntry = () => {
     const onFinishWatching = async (iPastAnime:IPastAnime) => {
       handleFinishWatching(iPastAnime.anime_id);
     }
-  
+
+    const handleDelete = async (animeId: number) => {
+      try {
+        await deletePastAnime(animeId);
+        loadPastAnime();
+      } catch (error) {
+        console.error("エラーが発生しました:", error);
+        alert("削除に失敗しました。");
+      }
+    }
+
+    const onDelete = (iPastAnime:IPastAnime) => {
+      handleDelete(iPastAnime.anime_id);
+    }
+
     useEffect(() => {
       if (user) {
         loadPastAnime();
@@ -86,6 +100,7 @@ const AnimePastEntry = () => {
                 pastAnime={pastAnimedata}
                 onclick={onEpisodeUp}
                 onFinish={onFinishWatching}
+                onDelete={onDelete}
                 isFirstZeroEpisode={isFirstZeroEpisode}
               />
             );

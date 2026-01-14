@@ -4,5 +4,6 @@ export const ContentArray =
     { content: "current", contentName: "現在作品" },
     { content: "past", contentName: "過去作品" },
     { content: "viewed", contentName: "視聴済み" },
-    { content: "history", contentName: "視聴履歴" }
+    { content: "history", contentName: "視聴履歴" },
+    { content: "yearly", contentName: "年別視聴作品" }
 ];
