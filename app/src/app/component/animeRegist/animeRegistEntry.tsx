@@ -103,7 +103,7 @@ const AnimeRegistEntry = () => {
           .insert({
             anime_id: animeData.anime_id,
             user_id: user.id,
-            watching_start_date: '0000-01-01'
+            watching_start_date: '0001-01-01'
           });
           
         if (pastError) throw pastError;
