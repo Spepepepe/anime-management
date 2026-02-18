@@ -1,18 +1,20 @@
-# Anime-Management-Front-To-Supabase
+# anime-management
 
-アニメ視聴管理アプリケーション - Supabaseを使用したフロントエンド実装
+アニメ・ドラマ視聴管理アプリケーション - Supabaseを使用したフロントエンド実装
 
 ## 概要
 
-このアプリケーションは、アニメの視聴状況を管理するためのウェブアプリケーションです。ユーザーは視聴中のアニメ、過去に視聴したアニメ、視聴済みのアニメを管理することができます。Supabaseをバックエンドとして使用し、Next.jsとReactで構築されています。
+このアプリケーションは、アニメ・ドラマの視聴状況を管理するためのウェブアプリケーションです。ユーザーは視聴中の作品、過去に視聴した作品、視聴済みの作品を管理することができます。Supabaseをバックエンドとして使用し、Next.jsとReactで構築されています。
 
 ## 主な機能
 
 - **ユーザー認証**: Supabaseの認証機能を使用したログイン/ログアウト
-- **アニメ登録**: 新しいアニメの登録（今期のアニメまたは過去のアニメ）
-- **現在アニメ管理**: 現在視聴中のアニメの管理、話数のカウント、配信日時の表示
-- **過去アニメ管理**: 過去に視聴したアニメの記録
-- **視聴済みアニメ管理**: 視聴完了したアニメの管理
+- **作品登録**: アニメ・ドラマの登録（今期／過去の作品、種別、倍速フラグ、お気に入りキャラクター設定）
+- **現在作品管理**: 視聴中のアニメ・ドラマを配信曜日・時間順に一覧表示。話数カウント、視聴完了・削除が可能。放送済み話数に対して視聴が遅れている場合はタイトルを赤くハイライト表示
+- **過去作品管理**: 過去のアニメ・ドラマの話数管理、視聴完了への移行
+- **視聴済み作品管理**: 視聴完了したアニメ・ドラマの一覧管理
+- **日別視聴履歴**: 日付を指定して、その日に視聴した話数と視聴日時を一覧表示
+- **年別視聴統計**: 年ごとに完走したアニメ・ドラマの本数を集計して表示
 
 ## 技術スタック
 
@@ -21,63 +23,77 @@
 - **バックエンド**: Supabase (PostgreSQL, 認証, ストレージ)
 - **コンテナ化**: Docker, Docker Compose
 
-## データモデル
+## ER図
 
-アプリケーションは以下のデータモデルを使用しています：
+```mermaid
+erDiagram
+    auth_users {
+        uuid id PK
+    }
 
-- **anime**: 基本的なアニメ情報（タイトル、話数、お気に入りキャラクター等）
-- **current_anime**: 現在視聴中のアニメ（配信曜日、時間等）
-- **past_anime**: 過去に視聴したアニメ
-- **viewed_anime**: 視聴完了したアニメ
-- **anime_viewing_end_dates**: アニメ視聴終了日の履歴（複数回視聴対応）
-- **anime_watch_history**: アニメ視聴履歴（話数単位の視聴記録）
+    anime {
+        int anime_id PK
+        string user_id FK
+        string anime_name
+        int episode
+        string favoritecharacter
+        boolean speed
+        boolean anime_flg
+        int view_count
+        timestamp created_at
+        timestamp updated_at
+    }
 
-## 開発環境のセットアップ
+    current_anime {
+        int id PK
+        int anime_id FK
+        int year
+        string season
+        string releasedate
+        string delivery_weekday
+        string delivery_time
+        timestamp created_at
+    }
 
-### 前提条件
+    past_anime {
+        int id PK
+        int anime_id FK
+        date watching_start_date
+        timestamp created_at
+    }
 
-- Node.js
-- npm または yarn
-- Docker と Docker Compose（オプション）
+    viewed_anime {
+        int id PK
+        int anime_id FK
+        string user_id FK
+        timestamp viewed_end_date
+        timestamp created_at
+    }
 
-### ローカル開発
+    anime_viewing_end_dates {
+        int id PK
+        int anime_id FK
+        string user_id FK
+        date day
+    }
 
-1. リポジトリをクローン
-   ```
-   git clone <repository-url>
-   cd Anime-Management-Front-To-Supabase/app
-   ```
+    anime_watch_history {
+        uuid history_id PK
+        int anime_id FK
+        string user_id FK
+        int episode
+        timestamp created_at
+        timestamp updated_at
+    }
 
-2. 依存関係のインストール
-   ```
-   npm install
-   ```
+    auth_users ||--o{ anime : "所有"
+    auth_users ||--o{ viewed_anime : "所有"
+    auth_users ||--o{ anime_viewing_end_dates : "所有"
+    auth_users ||--o{ anime_watch_history : "所有"
 
-3. 環境変数の設定
-   `.env.example` ファイルを `.env` にコピーし、Supabaseの認証情報を設定
-
-4. 開発サーバーの起動
-   ```
-   npm run dev
-   ```
-
-### Dockerを使用した開発
-
-1. Docker Composeでアプリケーションを起動
-   ```
-   docker-compose up -d
-   ```
-
-## デプロイ
-
-1. アプリケーションのビルド
-   ```
-   npm run build
-   ```
-
-2. 静的ファイルの生成（オプション）
-   ```
-   npm run export
-   ```
-
-3. 生成されたファイルをホスティングサービスにデプロイ
+    anime ||--o| current_anime : "視聴中"
+    anime ||--o| past_anime : "過去視聴"
+    anime ||--o{ viewed_anime : "視聴済み"
+    anime ||--o{ anime_viewing_end_dates : "終了日履歴"
+    anime ||--o{ anime_watch_history : "視聴履歴"
+```
