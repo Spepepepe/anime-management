@@ -23,6 +23,12 @@
 - **バックエンド**: Supabase (PostgreSQL, 認証, ストレージ)
 - **コンテナ化**: Docker, Docker Compose
 
+## インフラ構成
+
+- AWS S3 による静的ホスティング（IP制限付き）
+- CloudFormation でインフラをコード管理
+- GitHub Actions で `app/` や `cloudformation/` への変更を自動デプロイ
+
 ## ER図
 
 ```mermaid
